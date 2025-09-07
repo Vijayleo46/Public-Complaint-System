@@ -1,0 +1,95 @@
+{% include 'adminheader.html' %}
+
+<style>
+  /* Center the search container (adapting for general content) */
+  .content-container {
+    max-width: 1200px; /* Adjusted max-width for table content */
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  /* Center text in the header */
+  .section-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  /* Table specific styling to match the new aesthetic */
+  .table-responsive {
+    margin-top: 20px;
+    background-color: #ffffff; /* White background for the table container */
+    padding: 20px; /* Add some padding around the table */
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+  }
+
+  .table {
+    width: 100%;
+    margin-bottom: 0; /* Remove default table margin */
+  }
+
+  .table thead th {
+    background-color:  #28a745; /* Blue header from sample (buttons are green) */
+    color: white;
+    vertical-align: middle;
+    font-weight: 600;
+    padding: 12px 15px;
+    border-bottom: none; /* Remove border from header */
+  }
+
+  .table tbody tr {
+    transition: background-color 0.3s ease;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f2f2f2; /* Light hover effect */
+  }
+
+  .table tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+    max-width: 250px; /* Slightly increased max-width for better readability */
+    word-wrap: break-word;
+  }
+
+  .table tbody tr:last-child td {
+    border-bottom: none;
+  }
+</style>
+
+<div class="content-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="section-header">
+    <h3>View Public / User</h3>
+    <p>Details of all registered public users</p>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>House Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in p %}
+        <tr>
+          <td>{{i.id}}</td>
+          <td>{{i.first_name}}</td>
+          <td>{{i.last_name}}</td>
+          <td>{{i.house_name}}</td>
+          <td>{{i.phone}}</td>
+          <td>{{i.email}}</td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include 'footer.html' %}

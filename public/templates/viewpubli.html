@@ -1,0 +1,87 @@
+{% include 'userheader.html' %}
+
+<!-- Clean Styling for Complaints -->
+<style>
+  .complaints-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .complaints-title {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .complaints-title h3 {
+    color: #198754;
+    font-weight: 700;
+  }
+
+  .table th {
+    background-color: #198754;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+  }
+
+  .table td {
+    padding: 12px;
+    vertical-align: middle;
+    word-break: break-word;
+    max-width: 220px;
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #e7f4ed;
+  }
+</style>
+
+<!-- Complaints Table -->
+<div class="complaints-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="complaints-title">
+    <h3>View Public Complaints</h3>
+    <p class="text-muted">Complaints submitted by users with department and reply details</p>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Complaint Type</th>
+          <th>Department Name</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Reply</th>
+          <th>Date Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in o %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td>{{ u.user.first_name }}</td>
+          <td>{{ u.complaint_type }}</td>
+          <td>{{ u.dept.dept_name }}</td>
+          <td>{{ u.title }}</td>
+          <td>{{ u.description }}</td>
+          <td>{{ u.reply }}</td>
+          <td>{{ u.date_time }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include 'footer.html' %}

@@ -1,0 +1,303 @@
+{% include 'deptheader.html' %}
+
+<style>
+  .search-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .section-header h3 {
+    color: #333;
+    font-weight: 600;
+  }
+
+  .form-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+  }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .field-label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .search-field input {
+    padding: 10px 15px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .search-field input:focus {
+    border-color: #198754;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+  }
+
+  .btn-submit {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    min-width: 150px;
+    font-weight: 600;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-submit:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .table-responsive {
+    margin-top: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+
+  .table thead th {
+    background-color: #198754;
+    color: white;
+    padding: 12px 15px;
+  }
+
+  .table tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f2f2f2;
+  }
+
+  .table .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+
+  .table .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+
+  .table .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+
+  .table .btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+</style>
+
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="section-header">
+    <h3>Manage Staff</h3>
+  </div>
+
+  {% if s %}
+  <form method="post">
+    <div class="form-card">
+      <div class="search-grid">
+        <div class="search-field">
+          <label for="fname" class="field-label">First Name</label>
+          <input type="text" name="fname" id="fname" required value="{{s.firstname}}">
+        </div>
+        <div class="search-field">
+          <label for="lname" class="field-label">Last Name</label>
+          <input type="text" name="lname" id="lname" required value="{{s.lastname}}">
+        </div>
+        <div class="search-field">
+          <label for="place" class="field-label">Place</label>
+          <input type="text" name="place" id="place" required value="{{s.place}}">
+        </div>
+        <div class="search-field">
+          <label for="phone" class="field-label">Phone</label>
+          <input type="number" name="phone" id="phone" required value="{{s.phone}}">
+        </div>
+        <div class="search-field">
+          <label for="email" class="field-label">Email</label>
+          <input type="email" name="email" id="email" required value="{{s.email}}">
+        </div>
+      
+      </div>
+      <input type="submit" name="update" value="Update Staff" class="btn-submit">
+    </div>
+  </form>
+
+  {% else %}
+  <div class="form-card">
+    <form method="post" id="staffForm" onsubmit="return validateForm()">
+      <div class="search-grid">
+        <div class="search-field">
+          <label for="fname" class="field-label">First Name</label>
+          <input type="text" name="fname" id="fname">
+          <div class="error-message" id="fnameError"></div>
+        </div>
+        <div class="search-field">
+          <label for="lname" class="field-label">Last Name</label>
+          <input type="text" name="lname" id="lname">
+          <div class="error-message" id="lnameError"></div>
+        </div>
+        <div class="search-field">
+          <label for="place" class="field-label">Place</label>
+          <input type="text" name="place" id="place">
+          <div class="error-message" id="placeError"></div>
+        </div>
+        <div class="search-field">
+          <label for="phone" class="field-label">Phone</label>
+          <input type="text" name="phone" id="phone">
+          <div class="error-message" id="phoneError"></div>
+        </div>
+        <div class="search-field">
+          <label for="email" class="field-label">Email</label>
+          <input type="email" name="email" id="email">
+          <div class="error-message" id="emailError"></div>
+        </div>
+        
+        <div class="search-field">
+          <label for="username" class="field-label">Username</label>
+          <input type="text" name="username" id="username">
+          <div class="error-message" id="usernameError"></div>
+        </div>
+        <div class="search-field">
+          <label for="password" class="field-label">Password</label>
+          <input type="password" name="password" id="password">
+          <div class="error-message" id="passwordError"></div>
+        </div>
+      </div>
+      <input type="submit" name="submit" value="Add Staff" class="btn-submit">
+    </form>
+  </div>
+  {% endif %}
+
+  <div class="table-section">
+    <h3 class="text-center mb-4">Department List</h3>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Place</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <!-- <th>Pincode</th> -->
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for j in o %}
+          <tr>
+            <td>{{j.id}}</td>
+            <td>{{j.firstname}}</td>
+            <td>{{j.lastname}}</td>
+            <td>{{j.place}}</td>
+            <td>{{j.phone}}</td>
+            <td>{{j.email}}</td>
+            <!-- <td>{{j.pincode}}</td> -->
+            <td>
+              <a href="/updatei/{{j.id}}" class="btn btn-sm btn-success me-2">Update</a>
+              <a href="/deletei/{{j.id}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this department?');">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function validateForm() {
+    let isValid = true;
+
+    const displayError = (id, message) => {
+      document.getElementById(id + 'Error').innerText = message;
+      document.getElementById(id).classList.add('is-invalid');
+    };
+
+    const clearError = (id) => {
+      document.getElementById(id + 'Error').innerText = '';
+      document.getElementById(id).classList.remove('is-invalid');
+    };
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    const pincodeRegex = /^[0-9]{6}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const fields = [
+      { id: 'fname', label: 'First Name', regex: nameRegex, msg: 'Only letters allowed' },
+      { id: 'lname', label: 'Last Name', regex: nameRegex, msg: 'Only letters allowed' },
+      { id: 'place', label: 'Place' },
+      { id: 'phone', label: 'Phone', regex: phoneRegex, msg: 'Must be 10 digits' },
+      { id: 'email', label: 'Email', regex: emailRegex, msg: 'Invalid email format' },
+      { id: 'pincode', label: 'Pincode', regex: pincodeRegex, msg: 'Must be 6 digits' },
+      { id: 'username', label: 'Username' },
+      { id: 'password', label: 'Password', regex: passwordRegex, msg: 'Minimum 8 chars, uppercase, lowercase, number, special char' },
+    ];
+
+    fields.forEach(field => {
+      const el = document.getElementById(field.id);
+      const val = el.value.trim();
+      clearError(field.id);
+
+      if (!val) {
+        displayError(field.id, `${field.label} is required.`);
+        isValid = false;
+      } else if (field.regex && !field.regex.test(val)) {
+        displayError(field.id, field.msg);
+        isValid = false;
+      }
+    });
+
+    return isValid;
+  }
+</script>
+
+{% include 'footer.html' %}

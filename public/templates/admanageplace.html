@@ -1,0 +1,184 @@
+{% include 'adminheader.html' %}
+
+<style>
+  .search-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .search-field input,
+  .search-field select {
+    padding: 10px 35px 10px 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .field-label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .search-field .field-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    pointer-events: none;
+    font-size: 18px;
+    color: #999;
+  }
+
+  .btn-success {
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  table th {
+    background-color: #28a745;
+    color: white;
+    text-align: center;
+  }
+
+  table td {
+    vertical-align: middle;
+  }
+</style>
+
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>Manage Place</h3>
+  </div>
+
+  {% if a %}
+  <form method="post" onsubmit="return validatePlaceForm(this);">
+    <div class="search-grid">
+      <div class="search-field">
+        <label class="field-label" for="placename">Place Name</label>
+        <input type="text" name="placename" id="placename" value="{{a.place_name}}" required />
+      </div>
+
+      <div class="search-field">
+        <label class="field-label" for="placedescription">Place Description</label>
+        <input type="text" name="placedescription" id="placedescription" value="{{a.place_description}}" required />
+      </div>
+
+      <div class="search-field">
+        <label class="field-label" for="pincode">Pincode</label>
+        <input type="text" name="pincode" id="pincode" value="{{a.pincode}}" required />
+      </div>
+    </div>
+
+    <div class="mt-4 text-center">
+      <input type="submit" name="update" value="Update Place" class="btn btn-success" />
+    </div>
+  </form>
+  {% else %}
+  <form method="post" onsubmit="return validatePlaceForm(this);">
+    <div class="search-grid">
+      <div class="search-field">
+        <label class="field-label" for="placename">Place Name</label>
+        <input type="text" name="placename" id="placename" required />
+      </div>
+
+      <div class="search-field">
+        <label class="field-label" for="placedescription">Place Description</label>
+        <input type="text" name="placedescription" id="placedescription" required />
+      </div>
+
+      <div class="search-field">
+        <label class="field-label" for="pincode">Pincode</label>
+        <input type="text" name="pincode" id="pincode" required />
+      </div>
+    </div>
+
+    <div class="mt-4 text-center">
+      <input type="submit" name="submit" value="Add Place" class="btn btn-success" />
+    </div>
+  </form>
+  {% endif %}
+
+  <div class="mt-5">
+    <div class="search-header">
+      <h4>Place List</h4>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Place Name</th>
+            <th>Place Description</th>
+            <th>Pincode</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in m %}
+          <tr>
+            <td>{{i.id}}</td>
+            <td>{{i.place_name}}</td>
+            <td>{{i.place_description}}</td>
+            <td>{{i.pincode}}</td>
+            <td>
+              <a href="/update/{{i.id}}" class="btn btn-sm btn-info me-2">Update</a>
+              <a href="/delete/{{i.id}}" class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure you want to delete this place?');">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function validatePlaceForm(form) {
+    const placename = form.placename.value.trim();
+    const placedescription = form.placedescription.value.trim();
+    const pincode = form.pincode.value.trim();
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const pinRegex = /^\d{6}$/;
+
+    if (!placename || !nameRegex.test(placename)) {
+      alert("Place name must contain only letters and spaces.");
+      return false;
+    }
+
+    if (!placedescription || !nameRegex.test(placedescription)) {
+      alert("Place description must contain only letters and spaces.");
+      return false;
+    }
+
+    if (!pinRegex.test(pincode)) {
+      alert("Pincode must be a 6-digit number.");
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% include 'footer.html' %}

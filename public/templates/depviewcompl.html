@@ -1,0 +1,85 @@
+{% include 'deptheader.html' %}
+
+    <style>
+        body {
+            background-color: #e9f5e9;
+            padding-top: 50px;
+            font-family: Arial, sans-serif;
+        }
+       
+        h2 {
+            text-align: center;
+            color: #198754;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        table th {
+            background-color: #198754;
+            color: white;
+        }
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .invalid-feedback {
+            display: none;
+        }
+        .form-control.is-invalid + .invalid-feedback {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>View Complaints & Reply</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Complaint Type</th>
+                    <th>Department Name</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Reply</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in r %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.complaint_type }}</td>
+                    <td>{{ c.dept.dept_name }}</td>
+                    <td>{{ c.title }}</td>
+                    <td>{{ c.description }}</td>
+                
+                    <td>
+                        {% if not c.reply %}
+                        <form method="post" onsubmit="return validateReplyForm(this);">
+                            <input type="hidden" name="id" value="{{ c.id }}">
+                            <textarea name="reply" class="form-control" placeholder="Type your reply here..." required></textarea>
+                            <div class="invalid-feedback">
+                                Please enter your reply.
+                            </div>
+                            <button type="submit" name="submit" class="btn btn-success mt-2">Send Reply</button>
+                        </form>
+                        {% else %}
+                        {{ c.reply }}
+                        {% endif %}
+                    </td>
+                    <td>{{ c.date_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% include 'footer.html' %}

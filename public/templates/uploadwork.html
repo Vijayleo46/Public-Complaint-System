@@ -1,0 +1,145 @@
+{% include 'staffheader.html' %}
+
+<style>
+  .search-container {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 40px 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .search-field input {
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .search-field label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .search-field .field-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 18px;
+    color: #999;
+  }
+  .btn-submit {
+    background-color: #28a745;
+    border: none;
+    padding: 12px;
+    font-weight: 600;
+    color: white;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.3s ease;
+  }
+  .btn-submit:hover {
+    background-color: #218838;
+  }
+  table {
+    margin: 40px auto;
+    width: 90%;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
+  th {
+    background-color: #198754;
+    color: white;
+  }
+  td a {
+    color: #0d6efd;
+    text-decoration: none;
+  }
+  td a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>Upload Work from Staff</h3>
+    <p>Please upload the file and specify the date</p>
+  </div>
+  {%if g%}
+  <form method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
+
+    <div class="search-grid">
+      <div class="search-field">
+        <label for="file">File</label>
+        <input type="file" name="path" id="file" value="{{g.filepath}}" required>
+        <i class="bi bi-paperclip field-icon"></i>
+      </div>
+    </div>
+    <button type="submit" name="update" class="btn-submit">
+      <i class="bi bi-cloud-arrow-up-fill me-2"></i> Submit Upload
+    </button>
+    {%else%}
+  <!-- Upload Form -->
+  <form method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
+
+    <div class="search-grid">
+      <div class="search-field">
+        <label for="file">File</label>
+        <input type="file" name="path" id="file" required>
+        <i class="bi bi-paperclip field-icon"></i>
+      </div>
+    </div>
+    <button type="submit" name="submit" class="btn-submit">
+      <i class="bi bi-cloud-arrow-up-fill me-2"></i> Submit Upload
+    </button>
+  </form>
+</div>
+{%endif%}
+<!-- Uploaded Files Table -->
+<table>
+  <tr>
+    <th>File</th>
+    <th>Date</th>
+    <th colspan="2">Actions</th>
+  </tr>
+  {% for i in ww %}
+  <tr>
+    <td>
+      <iframe src="/static/media/{{ i.filepath }}" frameborder="0" width="300px" height="100px">View</iframe>
+    </td>
+    <td>{{ i.date }}</td>
+    <td><a href="/updatefile/{{ i.id }}">Update</a></td>
+    <td><a href="/deletefile/{{ i.id }}">Delete</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+<script>
+  function validateForm() {
+    const fileInput = document.getElementById('file').value;
+    if (!fileInput) {
+      alert('File upload is required.');
+      return false;
+    }
+    return true;
+  }
+</script>
+
+{% include 'footer.html' %}

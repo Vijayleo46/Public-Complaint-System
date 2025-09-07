@@ -1,0 +1,91 @@
+{% include 'staffheader.html' %}
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f2f5f7;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .review-table {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h2 {
+            color: #198754;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        thead {
+            background-color: #198754;
+            color: white;
+        }
+
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table td {
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .no-reviews {
+            text-align: center;
+            color: #888;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="review-table">
+        <h2 class="text-center">View Reviews</h2>
+
+   
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Rating</th>
+                        <th>Review Description</th>
+                        <th>Department</th>
+                        
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in z %}
+                    <tr>
+                        <td>{{ review.id }}</td>
+                       <td>{{review.user.first_name}}</td>
+                        <td>{{review.rated_value}}</td>
+                        <td>{{review.review_description}}</td>
+                         <td>{{review.dept.dept_name }}</td>
+                        <td>{{review.rating_date}}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+       
+    </div>
+</div>
+
+{% include 'footer.html' %}

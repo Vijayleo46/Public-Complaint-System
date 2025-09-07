@@ -1,0 +1,218 @@
+{% include 'deptheader.html' %}
+
+<!-- Unified Styling -->
+<style>
+  .search-container {
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 40px 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-header h3 {
+    font-weight: 700;
+    color: #28a745;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .field-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .form-control,
+  textarea.form-control,
+  select {
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    box-sizing: border-box;
+  }
+
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+  }
+
+  .btn-success {
+    width: 100%;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px;
+    background-color: #198754;
+    border: none;
+    border-radius: 8px;
+    color: white;
+  }
+
+  .btn-success:hover {
+    background-color: #157347;
+  }
+
+  .invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+
+  .is-invalid + .invalid-feedback {
+    display: block;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  a {
+    color: #198754;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<!-- Form Section -->
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>Add Work to Staff</h3>
+    <p>Assign and manage staff work efficiently</p>
+  </div>
+
+  {% if d %}
+  <form method="post">
+      <div class="search-field">
+      <label for="st" class="field-label">Select Staff:</label>
+      <select name="st" class="form-control" required>
+        {% for i in f %}
+        <option value="{{ i.id }}">Name: {{ i.firstname }} {{ i.lastname }}, Place: {{ i.place }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <div class="search-field">
+      <label class="field-label" for="work">Work Title:</label>
+      <input type="text" name="work" id="work" value="{{ d.work }}" required class="form-control" />
+    </div>
+
+    <div class="search-field">
+      <label class="field-label" for="description">Description:</label>
+      <input type="text" name="description" id="description" value="{{ d.description }}" required class="form-control" />
+    </div>
+
+    <button type="submit" name="update" class="btn btn-success">Update Work</button>
+  </form>
+
+  {% else %}
+  <form method="POST" onsubmit="return validateWorkForm(this);" novalidate>
+    {% csrf_token %}
+    <div class="search-field">
+      <label for="st" class="field-label">Select Staff:</label>
+      <select name="st" class="form-control" required>
+        {% for i in f %}
+        <option value="{{ i.id }}">Name: {{ i.firstname }} {{ i.lastname }}, Place: {{ i.place }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="search-field">
+      <label for="workTitle" class="field-label">Work Title:</label>
+      <input type="text" class="form-control" name="work" id="workTitle" required>
+      <div class="invalid-feedback">Please enter the work title.</div>
+    </div>
+
+    <div class="search-field">
+      <label for="description" class="field-label">Description:</label>
+      <textarea class="form-control" name="description" id="description" required></textarea>
+      <div class="invalid-feedback">Please enter the work description.</div>
+    </div>
+
+    <button type="submit" name="submit" class="btn btn-success">Assign Work</button>
+  </form>
+  {% endif %}
+</div>
+
+<!-- Work Table -->
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <table>
+    <thead>
+      <tr>
+        <th>Work Title</th>
+        <th>Description</th>
+        <th>Staff</th>
+        <th>Uploads File</th>
+        <th colspan="2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in s %}
+      <tr>
+        <td>{{ i.work }}</td>
+        <td>{{ i.description }}</td>
+        <td>{{ i.staff.firstname }}</td>
+        <td><a href="/viewworkdept/{{ i.id }}/{{ i.staff.id }}">View Uploads</a></td>
+        <td><a href="/upadted/{{ i.id }}">Update</a></td>
+        <td><a href="/deleteded/{{ i.id }}">Delete</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Validation Script -->
+<script>
+  function validateWorkForm(form) {
+    let isValid = true;
+
+    const workTitle = form.querySelector('input[name="work"]');
+    const description = form.querySelector('textarea[name="description"]');
+
+    if (!workTitle.value.trim()) {
+      workTitle.classList.add('is-invalid');
+      isValid = false;
+    }
+
+    if (!description.value.trim()) {
+      description.classList.add('is-invalid');
+      isValid = false;
+    }
+
+    return isValid;
+  }
+</script>
+
+{% include 'footer.html' %}

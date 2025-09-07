@@ -1,0 +1,149 @@
+{% include 'staffheader.html' %}
+
+<style>
+  .search-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #dee2e6;
+    margin-top: 20px;
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    vertical-align: top;
+    text-align: left;
+  }
+
+  .styled-table thead th {
+    background-color: #198754;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .styled-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .styled-table tbody tr:hover {
+    background-color: #eef6f2;
+  }
+
+  .form-reply textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    resize: vertical;
+  }
+
+  .form-reply .btn-send-reply {
+    margin-top: 10px;
+    background-color: #198754;
+    border-color: #198754;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+
+  .form-reply .btn-send-reply:hover {
+    background-color: #157347;
+    border-color: #157347;
+  }
+
+  .invalid-feedback-custom {
+    color: #dc3545;
+    font-size: 0.875em;
+    display: none;
+    margin-top: 5px;
+  }
+
+  .form-reply textarea.is-invalid + .invalid-feedback-custom {
+    display: block;
+  }
+</style>
+
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>View Complaints & Reply</h3>
+    <p>Respond to pending complaints quickly and effectively</p>
+  </div>
+
+  <div class="table-responsive">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Complaint Type</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Reply</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in co %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.complaint_type }}</td>
+          <td>{{ c.title }}</td>
+          <td>{{ c.description }}</td>
+          <td>
+            {% if not c.reply %}
+            <form method="post" class="form-reply" onsubmit="return validateReplyForm(this);">
+              <input type="hidden" name="id" value="{{ c.id }}">
+              <textarea name="reply" placeholder="Type your reply here..." required></textarea>
+              <div class="invalid-feedback-custom">Please enter a valid reply (at least 3 characters).</div>
+              <button type="submit" name="submit" class="btn btn-send-reply">Send Reply</button>
+            </form>
+            {% else %}
+            <div class="replied-box">
+            {{ c.reply }}
+            </div>
+            {% endif %}
+          </td>
+          <td>{{ c.date_time }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function validateReplyForm(form) {
+    const replyField = form.querySelector('textarea[name="reply"]');
+    const errorMsg = form.querySelector('.invalid-feedback-custom');
+    const reply = replyField.value.trim();
+
+    replyField.classList.remove('is-invalid');
+    errorMsg.style.display = 'none';
+
+    if (reply === '' || reply.length < 3) {
+      replyField.classList.add('is-invalid');
+      errorMsg.textContent = 'Reply must be at least 3 characters.';
+      errorMsg.style.display = 'block';
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% include 'footer.html' %}

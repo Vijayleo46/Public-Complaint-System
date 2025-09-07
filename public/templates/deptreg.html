@@ -1,0 +1,145 @@
+{% include 'deptheader.html' %}
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    padding: 40px 20px;
+  }
+
+  .form-container {
+    max-width: 700px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #28a745;
+    font-weight: 700;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  h2::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background-color: #28a745;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  label {
+    font-weight: 500;
+    margin-top: 15px;
+  }
+
+  .form-control {
+    margin-top: 5px;
+  }
+
+  .btn-success {
+    margin-top: 25px;
+    width: 100%;
+    font-weight: 600;
+  }
+
+  .error-msg {
+    color: red;
+    font-size: 14px;
+    margin-top: 15px;
+    text-align: center;
+  }
+</style>
+
+<div class="form-container">
+  <h2>Add Department</h2>
+
+  <form method="post" onsubmit="return validateDepartmentForm()">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="deptname" class="form-label">Department name</label>
+      <input type="text" name="deptname" id="deptname" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="phone" class="form-label">Phone</label>
+      <input type="text" name="phone" id="phone" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <input type="text" name="description" id="description" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" name="username" id="username" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+
+    <input type="submit" name="submit" value="Add Department" class="btn btn-success">
+
+    <div id="form-error" class="error-msg"></div>
+  </form>
+</div>
+
+<script>
+  function validateDepartmentForm() {
+    const fields = [
+      { name: "deptname", label: "Department name" },
+      { name: "phone", label: "Phone", pattern: /^\d{10}$/, message: "Phone must be 10 digits." },
+      { name: "email", label: "Email", pattern: /\S+@\S+\.\S+/, message: "Invalid email format." },
+      { name: "description", label: "Description" },
+      { name: "username", label: "Username" },
+      { name: "password", label: "Password", minLength: 4 }
+    ];
+
+    const errorBox = document.getElementById("form-error");
+
+    for (let field of fields) {
+      const input = document.getElementsByName(field.name)[0];
+      const value = input.value.trim();
+
+      if (!value) {
+        errorBox.textContent = `${field.label} is required.`;
+        input.focus();
+        return false;
+      }
+
+      if (field.pattern && !field.pattern.test(value)) {
+        errorBox.textContent = field.message;
+        input.focus();
+        return false;
+      }
+
+      if (field.minLength && value.length < field.minLength) {
+        errorBox.textContent = `${field.label} must be at least ${field.minLength} characters.`;
+        input.focus();
+        return false;
+      }
+    }
+
+    errorBox.textContent = "";
+    return true;
+  }
+</script>
+
+{% include 'footer.html' %}

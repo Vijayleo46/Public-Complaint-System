@@ -1,0 +1,271 @@
+{% include 'userheader.html' %}
+
+<!-- Clean Template-Based Style -->
+<style>
+  .search-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-header h3 {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 26px;
+  }
+
+  .search-header p {
+    color: #666;
+    font-size: 15px;
+  }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .search-field input,
+  .search-field textarea {
+    padding: 10px 15px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: 0.3s ease;
+  }
+
+  .field-label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.2);
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 5px;
+  }
+
+  .btn-submit {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    transition: 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #218838;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 40px;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th, td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background-color: #28a745;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tr:hover {
+    background-color: #f1f1f1;
+    transition: 0.3s;
+  }
+
+  .action-links a {
+    margin: 0 6px;
+    color: #28a745;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .action-links a:hover {
+    text-decoration: underline;
+  }
+
+  .star-rating {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 1.5rem;
+    gap: 5px;
+  }
+
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+  }
+
+  .star-rating input[type="radio"]:checked ~ label {
+    color: #f5c518;
+  }
+
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: #f5c518;
+  }
+</style>
+
+<!-- Submit Rating Section -->
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>Submit Your Rating</h3>
+    <p>We'd love to hear your thoughts!</p>
+  </div>
+
+  {% if u %}
+    <form method="post">
+     
+      <div class="search-grid">
+        <div class="search-field">
+          <label class="field-label" for="review">Review Description</label>
+          <input type="text" class="form-control" name="review" id="review" value="{{u.review_description}}" required />
+        </div>
+
+         <div class="search-field">
+          <label for="ratings" class="field-label">Rated Value</label>
+          <div class="star-rating" id="ratings" >
+            <input type="radio" id="star5" name="ratings" value="5"><label for="star5" title="5 stars">★</label>
+            <input type="radio" id="star4" name="ratings" value="4"><label for="star4" title="4 stars">★</label>
+            <input type="radio" id="star3" name="ratings" value="3"><label for="star3" title="3 stars">★</label>
+            <input type="radio" id="star2" name="ratings" value="2"><label for="star2" title="2 stars">★</label>
+            <input type="radio" id="star1" name="ratings" value="1"><label for="star1" title="1 star">★</label>
+          </div>
+          <div class="error-message" id="ratingsError"></div>
+        </div>
+      </div>
+
+      <button type="submit" name="update" class="btn-submit">Update Rating</button>
+    </form>
+  {% else %}
+    <form method="POST" id="reviewForm" onsubmit="return validateForm();">
+
+      <div class="search-grid">
+        <div class="search-field">
+          <label for="review" class="field-label">Review Description</label>
+          <textarea class="form-control" id="review" name="review" placeholder="Write your feedback..." rows="4" required></textarea>
+          <div class="error-message" id="reviewError"></div>
+        </div>
+
+        <div class="search-field">
+          <label for="ratings" class="field-label">Rated Value</label>
+          <div class="star-rating" id="ratings">
+            <input type="radio" id="star5" name="ratings" value="5"><label for="star5" title="5 stars">★</label>
+            <input type="radio" id="star4" name="ratings" value="4"><label for="star4" title="4 stars">★</label>
+            <input type="radio" id="star3" name="ratings" value="3"><label for="star3" title="3 stars">★</label>
+            <input type="radio" id="star2" name="ratings" value="2"><label for="star2" title="2 stars">★</label>
+            <input type="radio" id="star1" name="ratings" value="1"><label for="star1" title="1 star">★</label>
+          </div>
+          <div class="error-message" id="ratingsError"></div>
+        </div>
+      </div>
+
+      <button type="submit" name="submit" class="btn-submit">
+        <i class="bi bi-check2-square me-1"></i> Submit Rating
+      </button>
+    </form>
+  {% endif %}
+</div>
+
+<!-- Ratings Table -->
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Review</th>
+      <th>Rated Value</th>
+      <th colspan="2">Action</th>
+    </tr>
+    {%for i in h%}
+    <tr>
+      <td>{{ i.id }}</td>
+      <td>{{ i.review_description }}</td>
+      <td>{{ i.rated_value }}</td>
+      <td class="action-links"><a href="/upadtedd/{{i.id}}">Update</a></td>
+      <td class="action-links"><a href="/deletededd/{{i.id}}">Delete</a></td>
+    </tr>
+    
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Form Validation Script -->
+<script>
+  function validateForm() {
+    let isValid = true;
+
+    const review = document.getElementById('review');
+    const ratingInputs = document.getElementsByName('ratings');
+    const reviewError = document.getElementById('reviewError');
+    const ratingsError = document.getElementById('ratingsError');
+
+    reviewError.textContent = '';
+    ratingsError.textContent = '';
+
+    if (review.value.trim() === '') {
+      reviewError.textContent = 'Review description is required.';
+      isValid = false;
+    }
+
+    let ratingSelected = false;
+    for (const input of ratingInputs) {
+      if (input.checked) {
+        ratingSelected = true;
+        break;
+      }
+    }
+
+    if (!ratingSelected) {
+      ratingsError.textContent = 'Please select a rating.';
+      isValid = false;
+    }
+
+    return isValid;
+  }
+</script>
+
+{% include 'footer.html' %}

@@ -1,0 +1,145 @@
+{% include 'adminheader.html' %}
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    padding: 40px 20px;
+  }
+
+  .card-form {
+    max-width: 700px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    color: #198754;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  h2::after {
+    content: '';
+    width: 80px;
+    height: 4px;
+    background-color: #198754;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+  }
+
+  .invalid-feedback {
+    display: none;
+    color: #198754;
+  }
+
+  .is-invalid + .invalid-feedback {
+    display: block;
+  }
+
+  .message-table {
+    margin-top: 40px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .message-table th,
+  .message-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+
+  .message-table th {
+    background-color: #198754;
+    color: white;
+    font-weight: bold;
+  }
+
+  .message-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .no-messages {
+    text-align: center;
+    margin-top: 30px;
+    color: #888;
+  }
+</style>
+
+<div class="card-form">
+  <h2>Send Message</h2>
+
+  <form method="post" onsubmit="return validateMessageForm(this);" class="needs-validation" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="receiver_type" value="department">
+
+  
+    <!-- Message -->
+    <div class="mb-4">
+      <label for="messageTextarea" class="form-label">Message:</label>
+      <textarea name="message" id="messageTextarea" class="form-control" rows="5" required></textarea>
+      <div class="invalid-feedback">Message cannot be empty.</div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="d-grid">
+      <button type="submit" name="submit" class="btn btn-success">Send Message</button>
+    </div>
+  </form>
+
+  <!-- Messages List -->
+    <h2 style="margin-top: 50px;">Messages</h2>
+    <table class="message-table">
+      <thead>
+        <tr>
+          <th>Message</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in d %}
+        <tr>
+          <td>{{ i.message }}</td>
+          <td><a href="/deletemssg/{{i.id}}">Delete</a></td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+<script>
+  function validateMessageForm(form) {
+    let isValid = true;
+
+    const departmentSelect = form.querySelector('#departmentSelect');
+    const messageTextarea = form.querySelector('#messageTextarea');
+
+    departmentSelect.classList.remove('is-invalid');
+    messageTextarea.classList.remove('is-invalid');
+
+    if (!departmentSelect.value.trim()) {
+      departmentSelect.classList.add('is-invalid');
+      isValid = false;
+    }
+
+    if (!messageTextarea.value.trim()) {
+      messageTextarea.classList.add('is-invalid');
+      isValid = false;
+    }
+
+    return isValid;
+  }
+</script>
+
+{% include 'footer.html' %}

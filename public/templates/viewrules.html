@@ -1,0 +1,106 @@
+{% include 'userheader.html' %}
+
+<!-- Page-specific styling -->
+<style>
+  .search-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-header h3 {
+    font-weight: 600;
+    color: #28a745;
+    margin-bottom: 10px;
+  }
+
+  .search-header p {
+    color: #999;
+    font-size: 15px;
+  }
+
+  .table-responsive {
+    margin-top: 20px;
+  }
+
+  .table {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #28a745;
+  }
+
+  .table thead th {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .table tbody tr:hover {
+    background-color: #f7f9fb;
+  }
+
+  .table tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+    word-wrap: break-word;
+    max-width: 350px;
+  }
+
+  .table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  
+  .btn-green {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+  }
+
+  .btn-green:hover {
+    background-color: #218838;
+  }
+</style>
+
+<!-- Rules and Regulations Display Section -->
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>View Rules and Regulations</h3>
+    <p>All current policies and community rules</p>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in e %}
+        <tr>
+          <td>{{ t.id }}</td>
+          <td>{{ t.title }}</td>
+          <td>{{ t.description }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include 'footer.html' %}

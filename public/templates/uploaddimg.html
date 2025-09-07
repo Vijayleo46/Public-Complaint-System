@@ -1,0 +1,169 @@
+{% include 'userheader.html' %}
+
+<style>
+  .search-container {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 40px 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .search-field input {
+    padding: 10px 35px 10px 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .search-field label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .search-field .field-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    pointer-events: none;
+    font-size: 18px;
+    color: #999;
+  }
+
+  .btn-submit,
+  .btn-update {
+    background-color: #28a745;
+    border: none;
+    padding: 12px;
+    font-weight: 600;
+    color: white;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.3s ease;
+  }
+
+  .btn-submit:hover,
+  .btn-update:hover {
+    background-color: #218838;
+  }
+
+  table {
+    margin: 40px auto;
+    width: 90%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
+
+  th {
+    background-color: #198754;
+    color: white;
+  }
+
+  td a {
+    color: #0d6efd;
+    text-decoration: none;
+  }
+
+  td a:hover {
+    text-decoration: underline;
+  }
+
+  td img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+</style>
+
+<div class="search-container" data-aos="fade-up" data-aos-delay="200">
+  <div class="search-header">
+    <h3>{% if f and f.id %}Update Image{% else %}Upload Work Image{% endif %}</h3>
+    <p>Select and upload your image file</p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" onsubmit="return validateImage();">
+    {% csrf_token %}
+    <div class="search-grid">
+      <div class="search-field">
+        <label for="img">Select Image</label>
+        <input type="file" name="img" id="img" {% if not f %}required{% endif %}>
+        <i class="bi bi-paperclip field-icon"></i>
+      </div>
+    </div>
+
+    {% if f and f.id %}
+      <button type="submit" name="update" class="btn btn-update">
+        <i class="bi bi-arrow-repeat me-2"></i> Update Image
+      </button>
+    {% else %}
+      <button type="submit" name="submit" class="btn btn-submit">
+        <i class="bi bi-upload me-2"></i> Upload Image
+      </button>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Uploaded Images Table -->
+{% if di %}
+<table>
+  <tr>
+    <th>Image</th>
+    <th colspan="2">Action</th>
+  </tr>
+  {% for n in di %}
+  <tr>
+    <td><img src="/static/media/{{ n.path }}" alt="Uploaded Image"></td>
+    <td><a href="/updateimg/{{ n.id }}">Update</a></td>
+    <td><a href="/deleteimg/{{ n.id }}" onclick="return confirm('Are you sure you want to delete this image?')">Delete</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<!-- JS Form Validation -->
+<script>
+  function validateImage() {
+    const fileInput = document.getElementById("img");
+    const file = fileInput.value;
+    if (!file) {
+      alert("Please select an image to upload.");
+      return false;
+    }
+
+    const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+    if (!allowedExtensions.exec(file)) {
+      alert("Only image files (jpg, jpeg, png, gif) are allowed.");
+      fileInput.value = "";
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% include 'footer.html' %}

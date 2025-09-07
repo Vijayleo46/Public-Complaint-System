@@ -1,0 +1,186 @@
+{% include 'adminheader.html' %}
+
+<style>
+  .form-section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+  .form-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .form-field input,
+  .form-field select {
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .form-field label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .btn-submit {
+    margin-top: 20px;
+  }
+  .table-section {
+    max-width: 960px;
+    margin: 40px auto;
+  }
+</style>
+
+<div class="form-section">
+  <div class="form-header">
+    <h2>{% if h %}Update Department{% else %}Add New Department{% endif %}</h2>
+  </div>
+
+  <form method="post" onsubmit="return validateDepartmentForm(this);">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="deptname">Department Name</label>
+        <input type="text" name="deptname" id="deptname" required value="{{h.dept_name}}">
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Phone</label>
+        <input type="text" name="phone" id="phone" required value="{{h.phone}}">
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required value="{{h.email}}">
+      </div>
+
+      <div class="form-field">
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" required value="{{h.description}}">
+      </div>
+
+      {% if not h %}
+      <div class="form-field">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required>
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="text-center btn-submit">
+      <input type="submit" name="{% if h %}update{% else %}submit{% endif %}" value="{% if h %}Update{% else %}Add{% endif %} Department" class="btn btn-success">
+    </div>
+  </form>
+</div>
+
+<div class="table-section">
+  <h3 class="text-center mb-4">Department List</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Department Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in o %}
+        <tr>
+          <td>{{j.id}}</td>
+          <td>{{j.dept_name}}</td>
+          <td>{{j.phone}}</td>
+          <td>{{j.email}}</td>
+          <td>{{j.description}}</td>
+          <td>
+            <a href="/updatee/{{j.id}}" class="btn btn-sm btn-info me-2">Update</a>
+            <a href="/deletee/{{j.id}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this department?');">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function validateDepartmentForm(form) {
+    let valid = true;
+
+    // Helper RegEx patterns
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const phoneRegex = /^\d{10}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // Department name
+    const deptname = form.deptname;
+    if (!nameRegex.test(deptname.value.trim())) {
+      alert("Department name should contain only letters.");
+      deptname.focus();
+      valid = false;
+    }
+
+    // Phone
+    const phone = form.phone;
+    if (!phoneRegex.test(phone.value.trim())) {
+      alert("Phone should contain exactly 10 digits.");
+      phone.focus();
+      valid = false;
+    }
+
+    // Email
+    const email = form.email;
+    if (!emailRegex.test(email.value.trim())) {
+      alert("Invalid email format.");
+      email.focus();
+      valid = false;
+    }
+
+    // Description
+    const description = form.description;
+    if (description.value.trim() === "") {
+      alert("Description cannot be empty.");
+      description.focus();
+      valid = false;
+    }
+
+    // Username & Password (only if new entry)
+    if (form.username && form.password) {
+      const username = form.username;
+      if (username.value.trim() === "") {
+        alert("Username is required.");
+        username.focus();
+        valid = false;
+      }
+
+      const password = form.password;
+      if (!passwordRegex.test(password.value.trim())) {
+        alert("Password must contain at least 8 characters, including uppercase, lowercase, number and special character.");
+        password.focus();
+        valid = false;
+      }
+    }
+
+    return valid;
+  }
+</script>
+
+{% include 'footer.html' %}

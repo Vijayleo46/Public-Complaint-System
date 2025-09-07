@@ -1,0 +1,81 @@
+{% include 'adminheader.html' %}
+
+<!-- Green-Themed CSS Matching Sample Template -->
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    padding: 40px 20px;
+  }
+
+  .search-container {
+    max-width: 960px;
+    margin: auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-header h3 {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .list-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .list-group-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .list-group-item i {
+    margin-right: 10px;
+    color: #28a745;
+    font-size: 18px;
+  }
+
+  .list-group-item:hover {
+    background-color: #e6f5ea;
+    color: #28a745;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+</style>
+
+<!-- Department Message Section -->
+<div class="search-container" data-aos="fade-up" data-aos-delay="200">
+  <div class="search-header">
+    <h3>Department Messages</h3>
+    <p>Select a department to view messages</p>
+  </div>
+
+  <div class="list-group">
+    {% for i in k %}
+      <a href="/departmsg/{{i.id}}" class="list-group-item">
+        <i class="fas fa-building"></i> {{i.dept_name}}
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% include 'footer.html' %}

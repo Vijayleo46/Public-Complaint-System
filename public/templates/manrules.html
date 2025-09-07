@@ -1,0 +1,183 @@
+{% include 'adminheader.html' %}
+
+<style>
+  .search-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .search-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .search-field input,
+  .search-field select {
+    padding: 10px 35px 10px 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .field-label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .search-field .field-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    pointer-events: none;
+    font-size: 18px;
+    color: #999;
+  }
+
+  .btn-green {
+    background-color: #28a745;
+    color: white;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+  }
+
+  .btn-green:hover {
+    background-color: #218838;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+  }
+
+  table thead {
+    background-color: #343a40;
+    color: white;
+  }
+
+  table th, table td {
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    text-align: center;
+  }
+
+  table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .mt-5 {
+    margin-top: 3rem;
+  }
+</style>
+
+<div class="search-container" data-aos="fade-up" data-aos-delay="300">
+  <div class="search-header">
+    <h3>Manage Rules and Regulations</h3>
+  </div>
+
+  {% if r %}
+  <form method="post" onsubmit="return validateRuleForm(this);">
+    <div class="search-grid">
+      <div class="search-field">
+        <label for="title" class="field-label">Title</label>
+        <input type="text" id="title" name="title" value="{{r.title}}" required />
+      </div>
+      <div class="search-field">
+        <label for="description" class="field-label">Description</label>
+        <input type="text" id="description" name="description" value="{{r.description}}" required />
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <input type="submit" name="update" value="Update Rule" class="btn-green">
+    </div>
+  </form>
+  {% else %}
+  <form method="post" onsubmit="return validateRuleForm(this);">
+    <div class="search-grid">
+      <div class="search-field">
+        <label for="title" class="field-label">Title</label>
+        <input type="text" id="title" name="title" required />
+      </div>
+      <div class="search-field">
+        <label for="description" class="field-label">Description</label>
+        <input type="text" id="description" name="description" required />
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <input type="submit" name="submit" value="Add Rule" class="btn-green">
+    </div>
+  </form>
+  {% endif %}
+
+  <div class="mt-5">
+    <h4 class="text-center">Rules and Regulations List</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in re %}
+        <tr>
+          <td>{{i.id}}</td>
+          <td>{{i.title}}</td>
+          <td>{{i.description}}</td>
+          <td>
+            <a href="/updated/{{i.id}}" class="btn btn-sm btn-info">Update</a>
+            <a href="/deleted/{{i.id}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this rule/regulation?');">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function validateRuleForm(form) {
+    let isValid = true;
+    const title = form.title.value.trim();
+    const desc = form.description.value.trim();
+    const nameRegex = /^[A-Za-z\s]+$/;
+
+    if (!title || !nameRegex.test(title)) {
+      alert("Title is required and should only contain letters and spaces.");
+      form.title.focus();
+      return false;
+    }
+
+    if (!desc || !nameRegex.test(desc)) {
+      alert("Description is required and should only contain letters and spaces.");
+      form.description.focus();
+      return false;
+    }
+
+    return isValid;
+  }
+</script>
+
+{% include 'footer.html' %}
