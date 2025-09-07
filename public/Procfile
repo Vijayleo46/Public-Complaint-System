@@ -1,1 +1,1 @@
-gunicorn public.public.wsgi --chdir public
+gunicorn public.public.wsgi
