@@ -1,1 +1,1 @@
-gunicorn  public.wsgig
+gunicorn public.public.wsgi
